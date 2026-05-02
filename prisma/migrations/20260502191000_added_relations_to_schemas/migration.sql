@@ -1,0 +1,11 @@
+-- DropForeignKey
+ALTER TABLE "event_rsvps" DROP CONSTRAINT "event_rsvps_event_id_fkey";
+
+-- AlterTable
+ALTER TABLE "event_rsvps" ALTER COLUMN "invite_id" DROP NOT NULL;
+
+-- AddForeignKey
+ALTER TABLE "event_rsvps" ADD CONSTRAINT "event_rsvps_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "event_rsvps" ADD CONSTRAINT "event_rsvps_invite_id_fkey" FOREIGN KEY ("invite_id") REFERENCES "event_invites"("id") ON DELETE SET NULL ON UPDATE CASCADE;
