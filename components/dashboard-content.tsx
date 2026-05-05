@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import type { RsvpStatus as PrismaRsvpStatus } from '@/app/generated/prisma/enums';
 import { count } from 'console';
 
-function countByStatus(eventRsvps: { status: PrismaRsvpStatus }[]) {
+export function countByStatus(eventRsvps: { status: PrismaRsvpStatus }[]) {
   let attendingCount = 0;
   let maybeCount = 0;
   let notAttendingCount = 0;
@@ -88,11 +88,9 @@ export default async function DashboardContent({ userId }: { userId: string }) {
                   </Button>
                 </div>
                 <div className='flex flex-wrap gap-2 text-xs'>
-                  <Badge variant='secondary'>
-                    Attending: {event.attendingCount}
-                  </Badge>
+                  <Badge>Attending: {event.attendingCount}</Badge>
                   <Badge variant='secondary'>Maybe: {event.maybeCount}</Badge>
-                  <Badge variant='secondary'>
+                  <Badge variant='outline'>
                     Not Attending: {event.notAttendingCount}
                   </Badge>
                 </div>
