@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛡️ Secure React Development (pnpm + dotenvx)
 
-## Getting Started
+This project implements a "Defense in Depth" strategy to protect against supply chain attacks and credential leaks using `pnpm` (v11+) and `dotenvx`.
 
-First, run the development server:
+## 🔐 Core Security Pillars
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Package Release Cooldown (Quarantine):** Prevents the installation of any package version published within the last 24 hours to allow time for the security community to vet them.
+
+- **Execution Prevention:** Automatically blocks unauthorized `postinstall` scripts, which are common vectors for malware.
+
+- **Zero-Knowledge Secrets:** Uses `dotenvx` to encrypt environment variables, allowing them to be safely stored in version control without exposing sensitive data.
+
+---
+
+## 🛠️ Configuration & Setup
+
+### 1. pnpm Security Configuration
+
+Security settings are managed in an `.npmrc` file at your project root.
+
+**File: `.npmrc**`
+
+```ini
+# Enforce a 24-hour (1440 minutes) cooldown on new versions
+minimumReleaseAge=1440
+
+# Block install scripts by default (Security by Default)
+strictDepBuilds=true
+
+# Ensure lockfile stays in sync with the registry
+frozen-lockfile=true
+
+# Prevent credential-downgrade attacks
+trustPolicy=no-downgrade
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Environment Variable Security (`dotenvx`)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`dotenvx` encrypts your `.env` values using a public/private key pair.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Install:** `pnpm add @dotenvx/dotenvx`
 
-## Learn More
+- **Encrypt:** Run `npx dotenvx encrypt` to encrypt `.env` and generate a `.env.keys` file.
 
-To learn more about Next.js, take a look at the following resources:
+- **IMPORTANT:** Add `.env.keys` to your `.gitignore`. **NEVER commit the private keys file**.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Development Workflow
 
-## Deploy on Vercel
+### Installing Dependencies
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Run the standard install command; `pnpm` will automatically follow the security rules in `.npmrc`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm install
+
+```
+
+### Managing Secrets
+
+- **To add/update a secret:** Update your `.env` file, then run `npx dotenvx encrypt`.
+
+- **Decryption:** Secrets are decrypted into process memory at runtime using the private key in `.env.keys`.
+
+### Scripts
+
+The `package.json` is configured to wrap Vite with `dotenvx` to inject secrets seamlessly.
+
+**File: `package.json**`
+
+```json
+{
+  "scripts": {
+    "dev": "dotenvx run -- vite",
+    "build": "dotenvx run -- vite build",
+    "preview": "dotenvx run -- vite preview"
+  }
+}
+```
+
+---
+
+## 💻 VS Code Integration
+
+- **dotenvx Extension:** Install the official extension to edit encrypted files directly.
+
+- **Integrated Terminal:** Automatically respects the security rules defined in `.npmrc`.

@@ -36,6 +36,7 @@ export default function RootLayout({
         <NeonAuthUIProvider
           authClient={authClient}
           credentials={{ forgotPassword: true }}
+          defaultTheme='dark'
         >
           <header className='border-b border-border bg-surface/90 backdrop-blur-md sticky top-0 z-10'>
             <div className='mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4'>

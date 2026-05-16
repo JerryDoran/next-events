@@ -8,5 +8,5 @@ export default async function DashboardPage() {
     return <div>You must be logged in to view this page.</div>;
   }
 
-  return <DashboardContent userId={session.data?.user?.id} />;
+  return <DashboardContent userId={session.data?.user?.id as string} />;
 }
