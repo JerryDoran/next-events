@@ -1,0 +1,8 @@
+# Enforce a 24-hour (1440 minutes) cooldown on new versions
+minimumReleaseAge: 1440
+
+# Block install scripts by default (Security by Default)
+strictDepBuilds: true
+
+# Prevent credential-downgrade attacks
+trustPolicy: no-downgrade
